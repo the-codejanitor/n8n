@@ -1,0 +1,240 @@
+{
+  "name": "Discord Summarizer",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "getAll",
+        "guildId": {
+          "__rl": true,
+          "value": "=<SCRUBBED_GUILD_ID>",
+          "mode": "id"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "=<SCRUBBED_CHANNEL_ID>",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [448, 0],
+      "id": "<UUID_SCRUBBED_1>",
+      "name": "Get many messages",
+      "webhookId": "<UUID_SCRUBBED_2>",
+      "credentials": {
+        "discordBotApi": {
+          "id": "<CRED_SCRUBBED_1>",
+          "name": "Discord Bot account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "chatgpt-4o-latest",
+          "mode": "list",
+          "cachedResultName": "CHATGPT-4O-LATEST"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=summarize the input messages from discord {{ $json.content }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [1072, 0],
+      "id": "<UUID_SCRUBBED_3>",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "<CRED_SCRUBBED_2>",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "content"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [784, 0],
+      "id": "<UUID_SCRUBBED_4>",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{}]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [112, 0],
+      "id": "<UUID_SCRUBBED_5>",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "toRecipients": "someone@somewhere.com",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [1440, 0],
+      "id": "<UUID_SCRUBBED_6>",
+      "name": "Send a message",
+      "webhookId": "<UUID_SCRUBBED_7>",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "<CRED_SCRUBBED_3>",
+          "name": "Microsoft Outlook account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Run it once a day automatically",
+        "height": 340,
+        "width": 220
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [48, -128],
+      "typeVersion": 1,
+      "id": "<UUID_SCRUBBED_8>",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Get Messages From Discord. It only gets the last 100 messages.\n\nTODO: only get past 24 hours of messages",
+        "height": 100,
+        "width": 280
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [368, -128],
+      "typeVersion": 1,
+      "id": "<UUID_SCRUBBED_9>",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "This step took me 2 hours, lots of trial and error. You should follow the docs from n8n to the letter https://docs.n8n.io/integrations/builtin/credentials/discord/\n\nEven so, you'll need to probably reset and reconnect many times until you get it right.",
+        "height": 180,
+        "width": 260
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [384, 208],
+      "typeVersion": 1,
+      "id": "<UUID_SCRUBBED_10>",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "Combine all the discord messages into 1 output so that the AI can summarize everything.",
+        "height": 340,
+        "width": 260
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [720, -128],
+      "typeVersion": 1,
+      "id": "<UUID_SCRUBBED_11>",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "Run the combined messages through the AI to summarize them",
+        "height": 340,
+        "width": 280
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [1040, -128],
+      "typeVersion": 1,
+      "id": "<UUID_SCRUBBED_12>",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "Send the summary of message via email.",
+        "height": 340,
+        "width": 280
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [1392, -128],
+      "typeVersion": 1,
+      "id": "<UUID_SCRUBBED_13>",
+      "name": "Sticky Note5"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get many messages": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get many messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "<VERSION_ID_SCRUBBED>",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "<INSTANCE_ID_SCRUBBED>"
+  },
+  "id": "<WORKFLOW_ID_SCRUBBED>",
+  "tags": []
+}
